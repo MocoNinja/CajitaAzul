@@ -83,8 +83,6 @@ En rigor solo lo he probado una vez con las dos opciones, así que igual con una
 ** Queda ver el rendimiento y que no se pierden mensajes **
 
 ### Reglas AWS
-
-### Reglas AWS
 ----
 IPv4	Custom TCP	TCP	4369	0.0.0.0/0	epmd
 IPv6	Custom TCP	TCP	4369	::/0	epmd

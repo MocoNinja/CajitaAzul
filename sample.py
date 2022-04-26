@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
+from asyncio.log import logger
 from blue_st_sdk.manager import Manager, BlueSTInvalidFeatureBitMaskException
 
 from blue_st_sdk.features import feature_accelerometer, feature_gyroscope, feature_temperature, feature_humidity
@@ -8,6 +9,7 @@ from blue_st_sdk.features import feature_accelerometer, feature_gyroscope, featu
 from sys import exit
 
 from time import sleep
+from config.config import ALLOWED_DEVICES
 from listeners.CustomManagerListener import CustomManagerListener
 from listeners.CustomFeatureListener import CustomFeatureListener
 
@@ -21,7 +23,11 @@ def main():
     mask_to_features_dic = FeatureCharacteristic.SENSOR_TILE_BOX_MASK_TO_FEATURE_DIC
     mask_to_features_dic[0x00400000] = feature_gyroscope
 
-    feature_listener = CustomFeatureListener()
+    handled_devices  = {}
+    feature_handlers = {}
+
+    logger.info(f"Dispositivos permitidos: {ALLOWED_DEVICES}...")
+
     try:
         print("Creando manager...")
         manager = Manager.instance()
@@ -41,35 +47,37 @@ def main():
         for device in discovered_devices:
             print(f"··· {device.get_name()} -- {device.get_tag()}")
 
-        # There is no code like hardcode
+
         for device in discovered_devices:
-            if device.get_name() == "lechuga":
-                print("ESTE ES EL MÍO...")
-                mah_device = device
-                break
 
-        if mah_device:
-            print("Me conecto al mío")
-            ## NO FUNCIONA PORQUE HAY QUE HACERLO AL INSTALAR LA APP CREO YO
-            print(f";;;; Añadiendo features...")
-            mah_device.add_external_features(mask_to_features_dic)
-            print(f";;;; Añadidas features...")
+            if device.get_name() in ALLOWED_DEVICES:
+                print(f"Se permite el dispositivo '{device.get_name()}'!")
+                handled_devices[device.get_name()] = device
 
-            if not mah_device.connect():
+        for deviceKey in handled_devices:
+            device = handled_devices[deviceKey]
+
+            print(f"Conectándose a {device.get_name()}...")
+            if not device.connect():
                 print("Lo intenté pero no pude :(")
                 raise Exception("NOMEPUEDOCONECTARMECAGOENLALECHEMERCHE EXCEPTION")
             
-        print("Si seguimos por aquí, pinta bien la cosa. Vamos a ver las features...")
+            print("Si seguimos por aquí, pinta bien la cosa. Vamos a ver las features...")
 
-        features = device.get_features()
+            features = device.get_features()
 
-        for feature in features:
-            print(f"Se ha descubierto la feature {feature.get_name()}...")
-            feature.add_listener(feature_listener)
-            mah_device.enable_notifications(feature)
+            for feature in features:
+                print(f"Se ha descubierto la feature {feature.get_name()}...")
+                custom_feature = CustomFeatureListener(device.get_name())
+                feature_handlers[device.get_name()] = custom_feature
+
+                feature.add_listener(custom_feature)
+                device.enable_notifications(feature)
 
         while True:
-            mah_device.wait_for_notifications(0.5)
+            for deviceKey in handled_devices:
+                device = handled_devices[deviceKey]
+                device.wait_for_notifications(0.5)
 
     except KeyboardInterrupt:
         print("Se ha detectado que se quiere que salir, así que hasta la vista, baby...")

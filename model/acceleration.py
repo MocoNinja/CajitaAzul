@@ -5,7 +5,7 @@ from model.json.json_converter import sensor_converter
 
 class Acceleration:
 
-    def __init__(self, x_val, y_val, z_val, id, timestamp):
+    def __init__(self, x_val, y_val, z_val, id, timestamp, device_id):
         self.id = id
         self.x_val = float(x_val)
         self.y_val = float(y_val)
@@ -13,6 +13,7 @@ class Acceleration:
         self.st_timestamp = timestamp
         self.py_timestamp = datetime.now()
         self.unit = "mg"
+        self.device_id = device_id
 
     
     def to_json(self):

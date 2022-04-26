@@ -24,5 +24,7 @@ MQTT_BROKER_PORT    : final(int) = int(getenv("MQTT_BROKER_PORT"))
 MQTT_USER_NAME      : final(str) = getenv("MQTT_USER_NAME")
 MQTT_USER_PASS      : final(str) = getenv("MQTT_USER_PASS")
 
-TOPIC_ACCEL      : final(str) = getenv("TOPIC_ACCEL")
-TOPIC_TEMP       : final(str) = getenv("TOPIC_TEMP")
+TOPIC_ACCEL         : final(str) = getenv("TOPIC_ACCEL")
+TOPIC_TEMP          : final(str) = getenv("TOPIC_TEMP")
+
+ALLOWED_DEVICES     : final(list[str]) = getenv("ALLOWED_DEVICES").split(",")
