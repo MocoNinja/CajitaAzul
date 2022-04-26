@@ -1,0 +1,5 @@
+bluepy
+futures
+blue-st-sdk
+paho-mqtt
+python-dotenv
