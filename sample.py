@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
+from distutils.archive_util import make_archive
 from sys import exit
 from time import sleep
 
@@ -9,7 +10,7 @@ from blue_st_sdk.features import feature_accelerometer, feature_gyroscope, featu
 from blue_st_sdk.utils.uuid_to_feature_map import UUIDToFeatureMap
 from blue_st_sdk.utils.ble_node_definitions import FeatureCharacteristic
 
-from config.config import ALLOWED_DEVICES, OK_CODE_OK, ERROR_CODE_UNKNOWN_ERROR, OK_CODE_OK
+from config.config import ALLOWED_DEVICES, OK_CODE_OK, ERROR_CODE_UNKNOWN_ERROR, OK_CODE_OK, RETRIES
 from config.logger import logging
 
 from listeners.CustomManagerListener import CustomManagerListener
@@ -18,6 +19,7 @@ from listeners.CustomFeatureListener import CustomFeatureListener
 discovered_devices = []
 handled_devices  = {}
 feature_handlers = {}
+retries = 0
 
 def discover_devices(manager):
     manager.discover()
@@ -26,8 +28,17 @@ def discover_devices(manager):
 
     if not discovered_devices:
         logging.warning("No se ha detectado nada...")
-        exit(OK_CODE_OK)
-        
+        if retries < RETRIES:
+            retries += 1
+            logging.warning(f"Reintento {retries} / {RETRIES}")
+            discover_devices(manager)
+        else:
+            retries = 0
+            logging.warning(f"Ya no quedan reintentos")
+            exit(OK_CODE_OK)
+    else:
+        retries = 0    
+
     logging.info(f"Se ha(n) descubierto {len(discovered_devices)} dispositivo(s)...")
 
 
@@ -76,6 +87,8 @@ def main():
     mask_to_features_dic = FeatureCharacteristic.SENSOR_TILE_BOX_MASK_TO_FEATURE_DIC
     mask_to_features_dic[0x00400000] = feature_gyroscope
 
+    retries = 0
+
     try:
         logging.info("Creando manager...")
         manager = Manager.instance()
@@ -100,6 +113,14 @@ def main():
         logging.error(f"Error habilitando todas las features {e}...")
     except Exception as e:
         logging.error(f"Se ha piñado por {e}")
+        if retries < RETRIES:
+            retries += 1
+            logging.warning(f"Reintento {retries} / {RETRIES}")
+            main()
+        else:
+            retries = 0
+            logging.warning(f"Ya no quedan reintentos")
+            exit(OK_CODE_OK)
         exit(ERROR_CODE_UNKNOWN_ERROR)
 
 

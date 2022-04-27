@@ -30,6 +30,8 @@ TOPIC_MAGNETIC_FIELD       : final(str) = getenv("TOPIC_MAGNETIC_FIELD")
 TOPIC_PRESSURE             : final(str) = getenv("TOPIC_PRESSURE")
 TOPIC_HUMIDITY             : final(str) = getenv("TOPIC_HUMIDITY")
 
+RETRIES                    : final(int) = int(getenv("RETRIES"))
+
 ALLOWED_DEVICES     : final(list[str]) = getenv("ALLOWED_DEVICES").split(",")
 
 # Limitación del event handling de cada feature
