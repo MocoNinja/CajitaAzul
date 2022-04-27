@@ -113,14 +113,6 @@ def main():
         logging.error(f"Error habilitando todas las features {e}...")
     except Exception as e:
         logging.error(f"Se ha piñado por {e}")
-        if retries < RETRIES:
-            retries += 1
-            logging.warning(f"Reintento {retries} / {RETRIES}")
-            main()
-        else:
-            retries = 0
-            logging.warning(f"Ya no quedan reintentos")
-            exit(OK_CODE_OK)
         exit(ERROR_CODE_UNKNOWN_ERROR)
 
 
