@@ -14,6 +14,7 @@ class Acceleration:
         self.py_timestamp = datetime.now()
         self.unit = "mg"
         self.device_id = device_id
+        self.magnitude = "acceleration"
 
     
     def to_json(self):

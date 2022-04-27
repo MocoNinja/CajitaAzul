@@ -3,16 +3,16 @@ from json     import dumps
 
 from model.json.json_converter import sensor_converter
 
-class Temperature:
+class Humidity:
 
     def __init__(self, val, id, timestamp, device_id):
         self.id = id
         self.val = float(val)
         self.st_timestamp = timestamp
         self.py_timestamp = datetime.now()
-        self.unit = "ºC"
+        self.unit = "%"
         self.device_id = device_id
-        self.magnitude = "temperature"
+        self.magnitude = "humidity"
 
     
     def to_json(self):

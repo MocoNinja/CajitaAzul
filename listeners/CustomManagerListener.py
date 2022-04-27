@@ -1,7 +1,9 @@
 from blue_st_sdk.manager import ManagerListener
 
+from config.logger import logging
+
 """
-    Esta clase "extiende/implementa" (python xdxdxdxdxd) al ManagerListener, que es el encargado de recibir las notificaciones del Manager cuando
+    Esta clase "extiende/implementa" al ManagerListener, que es el encargado de recibir las notificaciones del Manager cuando
     * Se descubre un nuevo nodo
     * El scanning empieza / para
 """
@@ -14,9 +16,9 @@ class CustomManagerListener(ManagerListener):
         else:
             status = "STOPPED"
 
-        print(f"=== CAMBIO DETECTADO. Estado: {status} ")
+        logging.info(f"=== CAMBIO DETECTADO. Estado: {status} ")
 
 
 
     def on_node_discovered(self, manager, node):
-        print(f"=== NODO DETECTADO. Nombre: {node.get_name()}")
+        logging.info(f"=== NODO DETECTADO. Nombre: {node.get_name()}")
