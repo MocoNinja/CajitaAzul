@@ -39,11 +39,11 @@ ALLOWED_DEVICES             : final(list[str]) = getenv("ALLOWED_DEVICES").split
 ## Value una dupla [TICKS_MAXIMOS, 0]
 ## El 0 se usa para llevar un conteo de los actuales
 DATA_SAMPLING_LIMITATIONS = {
-            "Accelerometer": [1,0],
-            "Magnetometer":  [1,0],
-            "Temperature":   [1,0],
-            "Pressure":      [1,0],
-            "Humidity":      [1,0],
+            "Accelerometer": [450,0],
+            "Magnetometer":  [150,0],
+            "Temperature":   [10,0],
+            "Pressure":      [10,0],
+            "Humidity":      [10,0],
 }
 
 ERROR_CODE_NODE_DISCONNECTED = 10

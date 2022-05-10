@@ -28,6 +28,8 @@ def discover_devices(manager):
 
     if not discovered_devices:
         logging.warning("No se ha detectado nada...")
+
+        global retries
         if retries < RETRIES:
             retries += 1
             logging.warning(f"Reintento {retries} / {RETRIES}")
@@ -81,13 +83,11 @@ def main():
     global handled_devices
     global feature_handlers
     global discovered_devices
+    global retries
 
-    features = {0x00800000: feature_accelerometer, 0x00400000: feature_gyroscope, 0x00040000: feature_temperature, 0x00080000: feature_humidity }
-
+    # features = {0x00800000: feature_accelerometer, 0x00400000: feature_gyroscope, 0x00040000: feature_temperature, 0x00080000: feature_humidity }
     mask_to_features_dic = FeatureCharacteristic.SENSOR_TILE_BOX_MASK_TO_FEATURE_DIC
     mask_to_features_dic[0x00400000] = feature_gyroscope
-
-    retries = 0
 
     try:
         logging.info("Creando manager...")
@@ -114,6 +114,7 @@ def main():
     except Exception as e:
         logging.error(f"Se ha piñado por {e}")
         exit(ERROR_CODE_UNKNOWN_ERROR)
+    # aquí se puede hacer, antes de la Exception global una que tire cuando se desconente o falle mqtt para reintarlo si quiere, aunque sea simplemente rellamando a main
 
 
 if __name__ == "__main__":
